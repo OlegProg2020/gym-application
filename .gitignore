@@ -8,7 +8,7 @@ GymApplication/appsettings.json
 GymApplication/GymApplication.csproj
 GymApplication/GymApplication.csproj.user
 GymApplication/Views/Shared/
-GymApplication/_ViewImports.cshtml
-GymApplication/_ViewStart.cshtml
+GymApplication/Views/_ViewImports.cshtml
+GymApplication/Views/_ViewStart.cshtml
 GymApplication.sln
 .vs/
