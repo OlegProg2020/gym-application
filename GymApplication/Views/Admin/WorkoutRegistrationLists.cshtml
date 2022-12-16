@@ -1,0 +1,240 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Списки регистрации</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="icon" href="/img/application/favicon.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+        integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+	<header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+	<section class="section">
+		<div class="container">
+			<div class="title-1">
+				<h2>Расписание занятий</h2>
+			</div>
+
+			<div class="schedule-selector" data-aos="fade-right">
+				@foreach (var schedule in ViewBag.Schedules)
+				{
+						<a class="schedule-option @(ViewBag.Id == schedule.Id ? "active" : "")"
+                        href="~/Admin/WorkoutRegistrationLists?id=@(schedule.Id)">
+						@(schedule.Title)
+						</a>
+				}
+			</div>
+			<form data-aos="fade-right" method="get">
+				<div>
+					<input name="date" id="date" type="date" class="week" onchange="SelectDate();"
+                        value="@(ViewBag.Date)">
+				</div>
+			</form>
+
+			<table class="schedule-table">
+				@{
+					if (ViewBag.Schedule != null)
+					{
+						int countOfRows = 0;
+
+						foreach (var day in ViewBag.Schedule.ScheduleDays)
+						{
+							int temp;
+							if ((temp = day.ScheduleDayWorkouts.Count) > countOfRows)
+							{
+								countOfRows = temp;
+							}
+						}
+
+						DateTime startDate = DateTime.Parse(ViewBag.Schedule.StartDate);
+						DateTime mondayDate = DateTime.Parse(ViewBag.Date);
+						while (mondayDate.DayOfWeek > DayOfWeek.Monday)
+						{
+							mondayDate = mondayDate.AddDays(-1);
+						}
+						int countOfDays = ViewBag.Schedule.ScheduleDays.Count;
+						ViewBag.MondayDate = mondayDate;
+
+						var rows = new ScheduleDayWorkout[countOfRows][];
+						var scheduleDays = new List<ScheduleDay>(ViewBag.Schedule.ScheduleDays);
+
+						for (int i = 0; i < countOfRows; i++)
+						{
+							DateTime date = mondayDate;
+							var workouts = new ScheduleDayWorkout[7];
+
+							for (int j = 1; j <= 7; j++)
+							{
+								ScheduleDayWorkout? workout = null;
+								try
+								{
+									int dayNumber = date.Subtract(startDate).Days % countOfDays + 1;
+
+									workout = scheduleDays.FirstOrDefault(d => d.DayNumber == dayNumber)?.ScheduleDayWorkouts.OrderBy(w => w.StartTime).ElementAt(i);
+								}
+								catch (InvalidOperationException)
+								{ }
+								catch (ArgumentOutOfRangeException)
+								{ }
+
+								workouts[j - 1] = workout;
+
+								date = date.AddDays(1);
+							}
+							rows[i] = workouts;
+						}
+
+						ViewBag.Rows = rows;
+					}               
+				}
+
+				<thead>
+					<tr>
+						<th>Понедельник @(ViewBag.MondayDate?.ToShortDateString())</th>
+						<th>Вторник @(ViewBag.MondayDate?.AddDays(1).ToShortDateString())</th>
+						<th>Среда @(ViewBag.MondayDate?.AddDays(2).ToShortDateString())</th>
+						<th>Четверг @(ViewBag.MondayDate?.AddDays(3).ToShortDateString())</th>
+						<th>Пятница @(ViewBag.MondayDate?.AddDays(4).ToShortDateString())</th>
+						<th>Суббота @(ViewBag.MondayDate?.AddDays(5).ToShortDateString())</th>
+						<th>Воскресенье @(ViewBag.MondayDate?.AddDays(6).ToShortDateString())</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					@if (ViewBag.Schedule != null)
+						foreach (var row in ViewBag.Rows)
+						{
+							DateTime date = ViewBag.MondayDate;
+
+							<tr>
+								@foreach (ScheduleDayWorkout workout in row)
+								{
+									List<WorkoutsRegistration>? workoutsRegistrations = ViewBag.WorkoutsRegistrations;
+									workoutsRegistrations = workoutsRegistrations?.Where(r => r.ScheduleDayWorkoutId == workout?.Id).ToList();
+
+									<td>
+										@if (workout != null)
+										{
+											<div class="workout">
+												<h3>@(workout.Workout.Title)</h3>
+												<p class="workout-time">@(workout.StartTime) - @(workout.EndTime)</p>
+												<p class="workout-info">@(workout.Workout.Coach == null ? "Тренер не указан" : workout.Workout.Coach.Name) @(workout.Workout.Coach == null ? " " : workout.Workout.Coach.Lastname)</p>
+												<p class="workout-info">@(workout.Place)</p>
+												
+												@{
+													string date1 = date.Year + "-" + (date.Month >= 10 ? date.Month.ToString() : ("0" + date.Month))
+														+ "-" + (date.Day >= 10 ? date.Day.ToString() : ("0" + date.Day));
+												}
+
+												<p class="workout-info">Осталось мест: @(workoutsRegistrations?.FirstOrDefault(r => r.Date == date1)?.QuantityOfPlaces ?? workout.QuantityOfPlaces)</p>
+												<a href="~/Admin/WorkoutRegistrationEditor?scheduleDayWorkoutId=@(workout.Id)&date=@(date.ToShortDateString())" class="schedule-option-special">К списку</a>
+											</div>
+										}
+									</td>
+									date = date.AddDays(1);
+								}
+							</tr>
+						}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<footer class="contacts bg-blue" id="contacts">
+		<div class="container">
+			<h2 class="contacts-title" data-aos="fade-down">Наши контакты</h2>
+
+			<p class="contacts-content" data-aos="fade-down">Хотите узнать больше?<br>Записывайтесь на гостевой визит!
+			</p>
+
+			<a href="~/Home/GuestVisit" class="contacts-button" data-aos="fade-down">Записаться на гостевой визит</a>
+
+			<div class="contacts-social" data-aos="zoom-in">
+				<a href="#!" target="_blank"><img src="/img/application/vk.png" alt="VK"></a>
+				<a href="#!" target="_blank"><img src="/img/application/telegram.png" alt="Telegram"></a>
+			</div>
+
+			<div class="contacts-data" data-aos="fade-down">
+				<a href="tel:+74722555555">Телефон: +7 (4722) 55-55-55</a><br>
+				<a href="mailto:familygym@mail.ru" target="_blank">E-mail: familygym@mail.ru</a><br>
+				<a href="https://yandex.ru/maps/geo/belgorod/53057412/?ll=36.583553%2C50.586047&z=11"
+                    target="_blank">Наш адрес: г. Белгород</a><br>
+				<p>Работаем ежедневно: с 9:00 до 21:00</p>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		function SelectDate()
+		{
+			var Date = document.getElementById("date").value;
+			if(Date !== '')
+			{
+				var Link = window.location.href;
+				if(Link.indexOf('?id') === -1)
+				{
+					Link += "?id=null";
+				}
+				Link = Link.split("&")[0];
+				Link += "&date=" + Date;
+				document.location.replace(Link);
+			}
+		}
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+        integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="/js/main.js"></script>
+</body>
+
+</html>

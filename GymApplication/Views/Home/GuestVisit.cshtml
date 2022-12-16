@@ -1,0 +1,115 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гостевой визит</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+        integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Запись на гостевой визит</h2>
+            </div>
+
+            <form method="post">
+                <div class="form-group">
+                    <label for="name">Ваше имя:</label>
+                    <input id="name" type="text" placeholder="Введите Ваше имя..." minlength="2" required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Ваш номер телефона:</label>
+                    <input id="phone" type="tel" pattern="8[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}"
+                        placeholder="8-xxx-xxx-xx-xx" maxlength="11" required />
+                </div>
+                <div class="flex-controls">
+                    <input class="button" type="submit" value="Записаться">
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="contacts bg-blue" id="contacts">
+        <div class="container">
+            <h2 class="contacts-title" data-aos="fade-down">Наши контакты</h2>
+
+            <p class="contacts-content" data-aos="fade-down">Хотите узнать больше?<br>Записывайтесь на гостевой визит!
+            </p>
+
+            <a href="~/Home/GuestVisit" class="contacts-button" data-aos="fade-down">Записаться на гостевой визит</a>
+
+            <div class="contacts-social" data-aos="zoom-in">
+                <a href="#!" target="_blank"><img src="/img/application/vk.png" alt="VK"></a>
+                <a href="#!" target="_blank"><img src="/img/application/telegram.png" alt="Telegram"></a>
+            </div>
+
+            <div class="contacts-data" data-aos="fade-down">
+                <a href="tel:+74722555555">Телефон: +7 (4722) 55-55-55</a><br>
+                <a href="mailto:familygym@mail.ru" target="_blank">E-mail: familygym@mail.ru</a><br>
+                <a href="https://yandex.ru/maps/geo/belgorod/53057412/?ll=36.583553%2C50.586047&z=11"
+                    target="_blank">Наш адрес: г. Белгород</a><br>
+                <p>Работаем ежедневно: с 9:00 до 21:00</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+        integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

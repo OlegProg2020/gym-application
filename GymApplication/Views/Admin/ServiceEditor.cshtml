@@ -1,0 +1,177 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Gym</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Редактор услуг</h2>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2">
+                    <h3>Просмотр/добавление/удаление/редактирование услуги</h3>
+                </div>
+
+                <form enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="id">Идентификатор услуги: </label>
+                        <input name="Id" id="id" type="number" placeholder="Поле заполняется автоматически" readonly
+                            required value="@(ViewBag.Service == null ? null : ViewBag.Service.Id)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Название: </label>
+                        <input name="Title" id="title" type="text" placeholder="Введите название клубной карты" required
+                            value="@(ViewBag.Service == null ? null : ViewBag.Service.Title)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="age_category">Возрастная категория: </label>
+                        <input name="AgeCategory" id="age_category" type="number" placeholder="Укажите возрастную категорию услуги"
+                            min="0" max="150" required value="@(ViewBag.Service == null ? null : ViewBag.Service.AgeCategory)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo">Загрузите фотографии для услуги:</label>
+                        <input name="UploadedImages" class="file-input" id="photo" type="file" accept="image/png, image/jpeg, image/jpg"
+                            title="Доступные расширения файлов: .jpeg, .jpg, .png" required onchange="validateFileType()" multiple >
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Описание: </label>
+                        <textarea name="Description" class="textarea" id="description" placeholder="Введите описание клубной карты"
+                            required >@(ViewBag.Service == null ? null : ViewBag.Service.Description)</textarea>
+                    </div>
+
+                    <div id="prices-block">
+                        @foreach(var servicePrice in ViewBag.ServicePrices)
+                        {
+                            <div class="semantic-block">
+	                            <div class="form-group">
+		                            <label> Количество посещений:
+			                            <input name="CountsOfVisits" type="number" placeholder="Введите количество посещений" min="1" max="1000000" required
+                                            value="@(servicePrice.CountOfVisits)"/>
+		                            </label>
+	                            </div>
+	                            <div class="form-group">
+		                            <label>Цена:
+			                            <input name="Prices" id="price" type="number" placeholder="Введите цену в рублях" min="0" max="1000000" required
+                                            value="@(servicePrice.Price)"/>
+		                            </label>
+	                            </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="flex-controls right">
+                        <div class="button delete-button" onclick="deletePrice()">Удалить последнюю цену</div>
+                        <div class="button" onclick="addPrice()">Добавить цену</div>
+                    </div>
+
+                    <div class="flex-controls">
+                        <input class="button" type="reset">
+                        <a class="button delete-button" href="/Admin/ServiceEditor_Delete?id=@(ViewBag.Service == null ? null : ViewBag.Service.Id)">Удалить</a>
+                        <input formmethod="post" class="button" type="submit" value="Сохранить">
+                    </div>
+                </form>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2" id="list">
+                    <h3>Просмотр списка услуг</h3>
+                </div>
+
+                <form method="get">
+                    <div class="form-group">
+                        <label for="title">Поиск услуги по названию:</label>
+                        <input name="Search_title" id="title" type="search" placeholder="Введите название услуги" required />
+                    </div>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Название</th>
+                            <th>Возрастная категория</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var service in ViewBag.Services)
+                        {
+                            <tr>
+                                <td>@(service.Id)</td>
+                                <td>@(service.Title)</td>
+                                <td>@(service.AgeCategory)</td>
+                                <td>
+                                    <a class="button table-button" href="~/Admin/ServiceEditor?id=@(service.Id)">Изменить</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="flex-controls">
+                    <a class="button" href="~/Admin/ServiceEditor?page=@(ViewBag.Page - 1)#list">⮈ Предыдущая страница</a>
+                    <a class="button" href="~/Admin/ServiceEditor?page=@(ViewBag.Page + 1)#list">Следующая страница ⮊</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

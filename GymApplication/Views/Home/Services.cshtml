@@ -1,0 +1,179 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наши услуги</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+        integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="brief-info">
+        <div class="container">
+            <div class="brief-info-row">
+                <div class="brief-info-card">
+                    <a href="~/Home/AboutClub">
+                        <div class="brief-info-card-content">
+                            <img src="/img/application/gym_icon.png" alt="Наш клуб">
+                            <h3>Наш клуб</h3>
+                            <p>Наш спортивный клуб - место, сочетающее в себе тренажерный зал, плавательный бассейн,
+                                кардио-зону, залы аэробики и многое другое...</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="brief-info-card">
+                    <a href="~/Home/OurTeam">
+                        <div class="brief-info-card-content">
+                            <img src="/img/application/team_icon.png" alt="Наша команда">
+                            <h3>Наша команда</h3>
+                            <p>Все члены нашей команды - самые настоящие профессионалы своего дела</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="brief-info-card">
+                    <a href="#contacts">
+                        <div class="brief-info-card-content">
+                            <img src="/img/application/contact_icon.png" alt="Контакты">
+                            <h3>Наши контакты</h3>
+                            <p>Наши соцсети, номера телефонов, адрес, часы работы</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Наши услуги</h2>
+            </div>
+
+            @foreach(var service in ViewBag.Services)
+            {
+                <div class="club-content" data-aos="fade-up">
+                    <div class="club-text">
+                        <h3 class="title-2">@(service.Title)</h3>
+                        <pre>@(service.Description)
+                        </pre>
+                        @foreach(var price in service.ServicePrices)
+                        {
+                            <div class="service-info">
+                                <p><strong>Количество посещений:</strong> @(price.CountOfVisits)</p>
+                                <p><strong>Цена:</strong> @(price.Price) ₽</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="gallery">
+                        @foreach(var image in service.ServiceImages)
+                        {
+                            <div class="gallery-item">
+                                <a href="#img@(image.Id)">
+                                    <img src="@(image.Path)">
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <footer class="contacts bg-blue" id="contacts">
+        <div class="container">
+            <h2 class="contacts-title" data-aos="fade-down">Наши контакты</h2>
+
+            <p class="contacts-content" data-aos="fade-down">Хотите узнать больше?<br>Записывайтесь на гостевой визит!
+            </p>
+
+            <a href="~/Home/GuestVisit" class="contacts-button" data-aos="fade-down">Записаться на гостевой визит</a>
+
+            <div class="contacts-social" data-aos="zoom-in">
+                <a href="#!" target="_blank"><img src="/img/application/vk.png" alt="VK"></a>
+                <a href="#!" target="_blank"><img src="/img/application/telegram.png" alt="Telegram"></a>
+            </div>
+
+            <div class="contacts-data" data-aos="fade-down">
+                <a href="tel:+74722555555">Телефон: +7 (4722) 55-55-55</a><br>
+                <a href="mailto:familygym@mail.ru" target="_blank">E-mail: familygym@mail.ru</a><br>
+                <a href="https://yandex.ru/maps/geo/belgorod/53057412/?ll=36.583553%2C50.586047&z=11"
+                    target="_blank">Наш адрес: г. Белгород</a><br>
+                <p>Работаем ежедневно: с 9:00 до 21:00</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- lightbox -->
+
+    @foreach(var service in ViewBag.Services)
+    {
+        @foreach(var image in service.ServiceImages)
+            {
+                <a href="#!" class="lightbox" id="img@(image.Id)">
+                    <span style="background-image: url('@(image.Path)')"></span>
+                </a>
+            }
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+        integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../js/main.js"></script>
+
+</body>
+
+</html>

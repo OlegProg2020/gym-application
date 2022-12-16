@@ -1,0 +1,216 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Редактор аккаунтов пользователей</h2>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2">
+                    <h3>Просмотр/добавление/удаление/редактирование аккаунта</h3>
+                </div>
+
+                <form>
+                    <div class="form-group">
+                        <label for="id">Идентификатор пользователя:</label>
+                        <input name="Id" id="id" type="number" placeholder="Поле заполняется автоматически"
+                            readonly required value="@(ViewBag.User == null ? null : ViewBag.User.Id)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Имя: </label>
+                        <input name="Name" id="name" type="text" placeholder="Введите имя пользователя"
+                        required value="@(ViewBag.User == null ? null : ViewBag.User.Name)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Фамилия: </label>
+                        <input name="Lastname" id="lastname" type="text" placeholder="Введите фамилию пользователя"
+                            required value="@(ViewBag.User == null ? null : ViewBag.User.Lastname)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="patronymic">Отчество: </label>
+                        <input name="Patronymic" id="patronymic" type="text" placeholder="Введите отчество пользователя (при наличии)"
+                            value="@(ViewBag.User == null ? null : ViewBag.User.Patronymic)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Дата рождения: </label>
+                        <input name="Birthdate" type="date" id="birthdate" required
+                            value="@(ViewBag.User == null ? null : ViewBag.User.Birthdate)">
+                    </div>
+
+                    <div class="semantic-block">
+                        <div class="form-group">
+                            <datalist id="card-list">
+                                @{
+                                    string clubCardsId = "";
+                                }
+                                @foreach(var clubCard in ViewBag.ClubCards)
+                                {
+                                    <option value="@(clubCard.Id)">@(clubCard.Title): Длительность: @(clubCard.Duration); Статус: @(clubCard.Status)</option>
+
+                                    if(clubCardsId == "")
+                                    {
+                                        clubCardsId += clubCard.Id;
+                                    }
+                                    else
+                                    {
+                                        clubCardsId += "|" + clubCard.Id;
+                                    }
+                                }
+                            </datalist>
+                            <label for="status">Абонемент:</label>
+                            <input name="Membership.ClubCardId" id="card" type="text" list="card-list" placeholder="Выберите Id нужной клубной карты"
+                                pattern="@(clubCardsId)" title="Выберите один из доступных вариантов" autocomplete="off"
+                                required value="@(ViewBag.Membership == null ? null : ViewBag.Membership.ClubCardId)"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="start">Дата начала действия абонемента:</label>
+                            <input name="Membership.StartDate" type="date" id="start"
+                                value="@(ViewBag.Membership == null ? null : ViewBag.Membership.StartDate)">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration"> </label>
+                            <input name="Membership.Duration" id="duration" type="number" placeholder="Укажите срок действия в днях" min="0"
+                                max="1000000" value="@(ViewBag.Membership == null ? null : ViewBag.Membership.Duration)"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Номер телефона (логин пользователя):</label>
+                        <input name="Phone" id="phone" type="tel" pattern="8[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}"
+                            placeholder="8-xxx-xxx-xx-xx" maxlength="11" required
+                            value="@(ViewBag.User == null ? null : ViewBag.User.Phone)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль: </label>
+                        <input name="Password" id="password" type="text" placeholder="Придумайте пароль для аккаунта пользователя"
+                            autocomplete="off" min="5" max="20" required
+                            value="@(ViewBag.User == null ? null : ViewBag.User.Password)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Роль:</label>
+                        <input name="Role" id="role" type="text" list="roles-list" placeholder="Выберите роль пользователя"
+                            pattern="user|admin" title="Выберите один из вариантов: user или admin" autocomplete="off"
+                            required value="@(ViewBag.User == null ? null : ViewBag.User.Role)"/>
+                        <datalist id="roles-list">
+                            <option value="user">Пользователь сайта</option>
+                            <option value="admin">Администратор сайта</option>
+                        </datalist>
+                    </div>
+
+                    <div class="flex-controls">
+                        <input class="button" type="reset">
+                        <a class="button delete-button" href="/Admin/AccountEditor_Delete?id=@(ViewBag.User == null ? null : ViewBag.User.Id)">Удалить</a>
+                        <input formmethod="post" class="button" type="submit" value="Сохранить">
+                    </div>
+                </form>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2" id="list">
+                    <h3>Просмотр списка пользователей</h3>
+                </div>
+
+                <form method="get">
+                    <div class="form-group">
+                        <label for="title">Поиск пользователя по фамилии:</label>
+                        <input name="Search_lastname" id="lastname" type="search" placeholder="Введите фамилию пользователя" required />
+                    </div>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Фамилия</th>
+                            <th>Имя</th>
+                            <th>Отчество</th>
+                            <th>Номер телефона</th>
+                            <th>Роль</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var user in ViewBag.Users)
+                        {
+                            <tr>
+                                <td>@(user.Id)</td>
+                                <td>@(user.Lastname)</td>
+                                <td>@(user.Name)</td>
+                                <td>@(user.Patronymic)</td>
+                                <td>@(user.Phone)</td>
+                                <td>@(user.Role)</td>
+                                <td>
+                                    <a class="button table-button" href="~/Admin/AccountEditor?id=@(user.Id)">Изменить</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="flex-controls">
+                    <a class="button" href="~/Admin/AccountEditor?page=@(ViewBag.Page - 1)#list">⮈ Предыдущая страница</a>
+                    <a class="button" href="~/Admin/AccountEditor?page=@(ViewBag.Page + 1)#list">Следующая страница ⮊</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

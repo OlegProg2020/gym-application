@@ -1,0 +1,248 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/PersonalAccount">
+                        <img src="/img/application/account.png">
+                        <span>Аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Редактор расписания занятий</h2>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2">
+                    <h3>Просмотр/добавление/удаление расписания</h3>
+                </div>
+
+                <form>
+                    <div class="form-group">
+                        <label for="id">Идентификатор расписания:</label>
+                        <input name="scheduleId" id="id" type="number" placeholder="Поле заполняется автоматически"
+                            readonly value="@(ViewBag.Schedule == null ? null : ViewBag.Schedule.Id)"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Название расписания:</label>
+                        <input name="schedule.Title" id="title" type="text" placeholder="Введите название расписания"
+                            required value="@(ViewBag.Schedule == null ? null : ViewBag.Schedule.Title)"/>
+                    </div>
+                    <div class="flex-controls">
+                        <div class="form-group">
+                            <label for="start">Дата начала:</label>
+                            <input name="schedule.StartDate" type="date" id="start" required
+                                value="@(ViewBag.Schedule == null ? null : ViewBag.Schedule.StartDate)">
+                        </div>
+                        <div class="form-group">
+                            <label for="start">Дата завершения:</label>
+                            <input name="schedule.EndDate" type="date" id="start" required
+                                value="@(ViewBag.Schedule == null ? null : ViewBag.Schedule.EndDate)">
+                        </div>
+                    </div>
+
+                    <div id="days-block">
+                        <datalist id="workout-list">
+                            @{
+                                string workoutsId = "";
+                            }
+                            @foreach(var workout in ViewBag.Workouts)
+                            {
+                                <option value="@(workout.Id)">@(workout.Title) - @(workout.Coach.Lastname) @(workout.Coach.Name)</option>
+
+                                if(workoutsId == "")
+                                {
+                                    workoutsId += workout.Id;
+                                }
+                                else
+                                {
+                                    workoutsId += "|" + workout.Id;
+                                }
+                            }
+                        </datalist>
+
+                        @{
+                            int id = 0;
+
+                            List<ScheduleDayWorkout> ScheduleDayWorkouts = ViewBag.ScheduleDayWorkouts;
+                        }
+                        @if (ViewBag.Schedule != null)
+                        {
+                            foreach (var scheduleDay in ViewBag.ScheduleDays)
+                            {
+                                <div id="day@(id)" class="semantic-block day">
+                                    <span class="textbox" style="font-weight: 500;">День №@(id + 1)</span>
+                                    <input name="schedule.ScheduleDays[@(id)].DayNumber" type="hidden" readonly required 
+                                        value="@(id + 1)"/>
+
+                                    <div class="workouts-block">
+                                        @{
+                                            int workoutNumber = 0;
+                                        }
+                                        @foreach (var scheduleDayWorkout in ScheduleDayWorkouts.Where(w => w.ScheduleDay.DayNumber == (id + 1)))
+                                        {
+                                            <div class="semantic-block">
+                                                <div class="form-group">
+                                                    <label>Идентификатор тренировки:
+                                                        <input name="schedule.ScheduleDays[@(id)].ScheduleDayWorkouts[@(workoutNumber)].WorkoutId" type="text" list="workout-list"
+                                                        placeholder="Выберите Id тренировки из списка" pattern="@(workoutsId)"
+                                                        title="Выберите один из доступных вариантов" autocomplete="off" required
+                                                        value="@(scheduleDayWorkout.WorkoutId)"/>
+                                                    </label>
+                                                </div>
+                                                <details>
+                                                    <summary>Больше информации</summary>
+                                                    <div class="form-group">
+                                                        <label>Место:
+                                                            <input name="schedule.ScheduleDays[@(id)].ScheduleDayWorkouts[@(workoutNumber)].Place" type="text"
+                                                                placeholder="Укажите место проведения тренировки" max="100" required
+                                                                value="@(scheduleDayWorkout.Place)"/>
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="qantityOfPlaces">Количество мест:</label>
+                                                        <input name="schedule.ScheduleDays[@(id)].ScheduleDayWorkouts[@(workoutNumber)].QuantityOfPlaces" id="qantityOfPlaces"
+                                                            type="number" placeholder="Укажите количество мест" min="0" max="1000000" required
+                                                            value="@(scheduleDayWorkout.QuantityOfPlaces)"/>
+                                                    </div>
+                                                    <div class="flex-controls">
+                                                        <div class="form-group">
+                                                            <label>Время начала тренировки:
+                                                                <input name="schedule.ScheduleDays[@(id)].ScheduleDayWorkouts[@(workoutNumber)].StartTime" type="time"
+                                                                    value="@(scheduleDayWorkout.StartTime)" required>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Время завершения:
+                                                                <input name="schedule.ScheduleDays[@(id)].ScheduleDayWorkouts[@(workoutNumber++)].EndTime" type="time"
+                                                                    value="@(scheduleDayWorkout.EndTime)" required>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex-controls right">
+                                        <div class="delete-button button" onclick="deleteWorkout(@(id))">Удалить последнее занятие </div>
+                                        <div class="button" onclick="addWorkout(@(id++), '@(workoutsId)')">Добавить занятие</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="flex-controls right">
+                        <div class="delete-button button" onclick="deleteDay()">Удалить последний день расписания</div>
+                        <div class="button" onclick="addDay('@(workoutsId)')">Добавить день</div>
+                    </div>
+
+                    <div class="flex-controls">
+                        <input class="button" type="reset">
+                        <a class="button delete-button" href="/Admin/ScheduleEditor_Delete?scheduleId=@(ViewBag.Schedule == null ? null : ViewBag.Schedule.Id)">Удалить</a>
+                        <input formmethod="post" class="button" type="submit" value="Добавить расписание">
+                    </div>
+                </form>
+            </div>
+
+            <div class="subsection">
+                <div class="title-2" id="list">
+                    <h3>Просмотр списка расписаний</h3>
+                </div>
+
+                <form method="get">
+                    <div class="form-group">
+                        <label for="title">Поиск расписания по названию:</label>
+                        <input name="Search_title" id="title" type="search" placeholder="Введите название расписания" required />
+                    </div>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Тип</th>
+                            <th>Дата начала</th>
+                            <th>Дата завершения</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var schedule in ViewBag.Schedules)
+                        {
+                        <tr>
+                            <td>@(schedule.Id)</td>
+                            <td>@(schedule.Title)</td>
+                            <td>@(schedule.StartDate)</td>
+                            <td>@(schedule.EndDate)</td>
+                            <td>
+                                <a class="button table-button" href="~/Admin/ScheduleEditor?id=@(schedule.Id)">Просмотреть</a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="flex-controls">
+                    <a class="button" href="~/Admin/ScheduleEditor?page=@(ViewBag.Page - 1)#list">⮈ Предыдущая страница</a>
+                    <a class="button" href="~/Admin/ScheduleEditor?page=@(ViewBag.Page + 1)#list">Следующая страница ⮊</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

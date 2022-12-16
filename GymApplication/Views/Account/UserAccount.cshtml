@@ -1,0 +1,96 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Gym</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/img/application/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+        integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="second-header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <div class="logo">
+                    <a class="logo-link" href="~/Home/Index">
+                        <img src="/img/application/favicon.png" alt="Family Gym">
+                        <span>FAMILY GYM</span>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Schedule?id=null">Расписание занятий</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/AboutClub">О клубе</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=16">Фитнес</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Services?AgeCategory=0">Фитнес для детей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ClubCards">Клубные карты</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="login">
+                    <a class="login-link nav-link" href="~/Account/Logout">
+                        <img src="/img/application/logout.png">
+                        <span>Выйти</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="title-1">
+                <h2>Личный кабинет пользователя</h2>
+            </div>
+
+            <p class="textbox"><span class="textbox-label">Фамилия: </span>@(ViewBag.User.Lastname)</p>
+            <p class="textbox"><span class="textbox-label">Имя: </span>@(ViewBag.User.Name)</p>
+            <p class="textbox"><span class="textbox-label">Отчество: </span>@(ViewBag.User.Patronymic)</p>
+            <p class="textbox"><span class="textbox-label">Дата рождения: </span>@(ViewBag.User.Birthdate)</p>
+            <p class="textbox"><span class="textbox-label">Номер телефона: </span>@(ViewBag.User.Phone)</p>
+            @{  int remains = 0;
+                if(ViewBag.Membership != null)
+                {
+                    DateTime today = DateTime.Today;
+                    DateTime start = today;
+                    
+
+                    if(DateTime.TryParse(ViewBag.Membership.StartDate, out start))
+                    {
+                        remains = start.AddDays(ViewBag.Membership.Duration).Subtract(today).Days;
+                    }
+
+                    if(remains < 0)
+                    {
+                        remains = 0;
+                    }
+                }
+            }
+            <p class="textbox"><span class="textbox-label">Остаток абонемента (дней): </span>@(remains)</p>
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+﻿* {
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    word-wrap: break-word;
+}
+
+img {
+    vertical-align: top;
+    max-width: 100%;
+    height: auto;
+}
+
+ul, ul li {
+    list-style: none;
+}
+
+a, a:link, a:visited, a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6, p, pre, form, label, input, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+*, *::before, *::after, form, label, input {
+    box-sizing: border-box;
+}
+
+img {
+    user-select: none;
+}
+
+strong {
+    font-weight: 500;
+}
+
+summary {
+    cursor: pointer;
+    user-select: none;
+}
+
+.button {
+    user-select: none;
+}

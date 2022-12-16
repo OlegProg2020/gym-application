@@ -1,0 +1,14 @@
+GymApplication/bin/
+GymApplication/obj/
+GymApplication/Properties/
+GymApplication/wwwroot/img/
+GymApplication/wwwroot/lib/
+GymApplication/appsettings.Development.json
+GymApplication/appsettings.json
+GymApplication/GymApplication.csproj
+GymApplication/GymApplication.csproj.user
+GymApplication/Views/Shared/
+GymApplication/_ViewImports.cshtml
+GymApplication/_ViewStart.cshtml
+GymApplication.sln
+.vs/
